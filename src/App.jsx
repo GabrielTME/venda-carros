@@ -14,7 +14,7 @@ function App() {
 
   return (
     <Router>
-      {user && <Navbar />}
+      {user && <Navbar setUser={setUser} />}
       <div style={{ flex: 1 }}>
         <Routes>
           <Route path="/" element={user ? <Home /> : <Navigate to="/login" />} />

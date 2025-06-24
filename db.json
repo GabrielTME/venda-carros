@@ -9,56 +9,5 @@
       "cidade": "SP"
     }
   ],
-  "cars": [
-    {
-      "id": "4b67",
-      "imagem": "https://imganuncios.mitula.net/medium/volkswagen_gol_2013_flex_volkswagen_gol_1_0_8v_g4_flex_4p_2013_5380007738231246280.jpg",
-      "marca": "Volkswagen",
-      "modelo": "Gol",
-      "motorizacao": "1.0 8v",
-      "ano": "2007",
-      "quilometragem": "185.000",
-      "valor": "20.000"
-    },
-    {
-      "id": "00af",
-      "imagem": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgNQuo05Sj0onguFpygx-bbGDO7waGVruYT2KKMcIFTMmsc7_cyJvhgvs_qZHN1Sq7Ov_igYp4q25TFVVJjyF2DFySJFwdFd0GIlh481w0N6eXhxzUBhfF0mFROhZEf8PW5zN1uNwGAOGw/s4577/IMG_3834.JPG",
-      "marca": "Fiat",
-      "modelo": "Marea",
-      "motorizacao": "2.4 20v",
-      "ano": "2002",
-      "quilometragem": "100.000",
-      "valor": "22.000"
-    },
-    {
-      "id": "f311",
-      "imagem": "https://www.picellileiloes.com.br/arquivos/leiloes/lotes/imagens/0668812b3ac3b3.jpeg",
-      "marca": "Chevrolet",
-      "modelo": "Opala",
-      "motorizacao": "4.1 12v",
-      "ano": "1989",
-      "quilometragem": "100.000",
-      "valor": "45.000"
-    },
-    {
-      "id": "78c1",
-      "imagem": "https://www.canaldapeca.com.br/blog/wp-content/uploads/2020/04/Peugeot_206.jpg",
-      "marca": "Peugeot",
-      "modelo": "206",
-      "motorizacao": "1.4 8v",
-      "ano": "2007",
-      "quilometragem": "120.000",
-      "valor": "1"
-    },
-    {
-      "id": "8221",
-      "imagem": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Fiat_Coup%C3%A9_front_20090604.jpg/960px-Fiat_Coup%C3%A9_front_20090604.jpg",
-      "marca": "Fiat",
-      "modelo": "Coupe",
-      "motorizacao": "2.0",
-      "ano": "1994",
-      "quilometragem": "150000",
-      "valor": "10000"
-    }
-  ]
+  "cars": []
 }
