@@ -1,15 +1,26 @@
+// Importa hooks do React Router e do React
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+
+// Importa o serviço de API configurado para fazer chamadas HTTP
 import api from '../services/api';
 
+// Componente principal: CarDetails
 export default function CarDetails() {
+  // Obtém o parâmetro 'id' da URL (ex.: /cars/5 -> id = 5)
   const { id } = useParams();
+
+  // Estado para armazenar os dados do carro
   const [car, setCar] = useState(null);
+  // Estado para controlar se está em modo de edição ou visualização
   const [editing, setEditing] = useState(false);
+  // Hook para redirecionamento de rotas
   const navigate = useNavigate();
 
+  // useEffect para buscar os dados do carro assim que o componente for carregado ou o ID mudar
   useEffect(() => {
     api.get(`/cars/${id}`).then(res => {
+      // Formata os campos numéricos ao carregar
       setCar({
         ...res.data,
         quilometragem: formatNumber(res.data.quilometragem),
@@ -18,20 +29,23 @@ export default function CarDetails() {
     });
   }, [id]);
 
+  // Função auxiliar para formatar números com separador de milhar no padrão brasileiro
   const formatNumber = (value) => {
     if (!value) return '';
     return parseInt(value.toString().replace(/\D/g, ''), 10).toLocaleString('pt-BR');
   };
 
+  // Manipula mudanças nos campos de input durante a edição
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (['quilometragem', 'valor'].includes(name)) {
-      setCar({ ...car, [name]: formatNumber(value) });
+      setCar({ ...car, [name]: formatNumber(value) }); // formata enquanto digita
     } else {
       setCar({ ...car, [name]: value });
     }
   };
 
+  // Função para colar o link de imagem copiado da área de transferência
   const handlePasteImage = async () => {
     try {
       const text = await navigator.clipboard.readText();
@@ -41,16 +55,19 @@ export default function CarDetails() {
     }
   };
 
+  // Salva as alterações feitas no carro
   const handleSave = async () => {
     const payload = {
       ...car,
+      // Remove os pontos de separador de milhar para enviar como número puro
       quilometragem: car.quilometragem.replace(/\./g, ''),
       valor: car.valor.replace(/\./g, '')
     };
-    await api.put(`/cars/${id}`, payload);
+    await api.put(`/cars/${id}`, payload); // Atualiza no backend
     setEditing(false);
   };
 
+  // Cancela a edição e recarrega os dados originais do carro
   const cancelEdit = () => {
     api.get(`/cars/${id}`).then(res => {
       setCar({
@@ -62,31 +79,37 @@ export default function CarDetails() {
     setEditing(false);
   };
 
+  // Exclui o carro após confirmação
   const handleDelete = async () => {
     if (window.confirm('Deseja excluir este carro?')) {
       await api.delete(`/cars/${id}`);
-      navigate('/cars');
+      navigate('/cars'); // Redireciona para a lista de carros
     }
   };
 
+  // Exibe um carregamento enquanto os dados não foram carregados
   if (!car) return <p>Carregando...</p>;
 
+  // Formata o valor para exibição com símbolo de moeda
   const formatValor = (value) => {
     if (!value) return '';
     return 'R$' + parseInt(value, 10).toLocaleString('pt-BR');
   };
 
+  // Formata a quilometragem com separador de milhar
   const formatQuilometragem = (value) => {
     if (!value) return '';
     return parseInt(value, 10).toLocaleString('pt-BR');
   };
 
+  // JSX principal que renderiza o componente
   return (
     <div style={{ padding: '2rem', maxWidth: '700px', margin: '0 auto' }}>
       <h2>Detalhes do veículo</h2>
 
       {editing ? (
         <>
+          {/* Formulário de edição */}
           <label>Imagem (URL):</label>
           <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
             <input
@@ -102,6 +125,7 @@ export default function CarDetails() {
             Envie sua imagem <a href="https://postimages.org/" target="_blank" rel="noopener noreferrer" style={{ color: '#1671ED' }}>aqui.</a>
           </small>
 
+          {/* Campos de edição de dados */}
           <label>Marca:</label>
           <input type="text" name="marca" value={car.marca} onChange={handleChange} style={inputStyle} />
           <label>Modelo:</label>
@@ -117,11 +141,13 @@ export default function CarDetails() {
           <label>Cidade:</label>
           <input type="text" name="cidade" value={car.cidade} onChange={handleChange} style={inputStyle} />
 
+          {/* Botões de salvar e cancelar */}
           <button onClick={handleSave} style={saveButton}>Salvar</button>
           <button onClick={cancelEdit} style={cancelButton}>Cancelar</button>
         </>
       ) : (
         <>
+          {/* Visualização dos dados quando não está editando */}
           {car.imagem && (
             <img src={car.imagem} alt="Carro" style={{ width: '100%', maxHeight: '400px', objectFit: 'cover', borderRadius: '8px', marginBottom: '1rem' }} />
           )}
@@ -142,6 +168,8 @@ export default function CarDetails() {
     </div>
   );
 }
+
+// Estilos para os campos de input e botões
 
 const inputStyle = {
   padding: '0.5rem',

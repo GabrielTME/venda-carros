@@ -1,8 +1,12 @@
+// Importa os hooks necessários do React e do React Router
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import { useNavigate, useParams } from 'react-router-dom';
 
+// Componente CarForm: utilizado tanto para cadastro quanto para edição de carros
 export default function CarForm() {
+
+  // Estado inicial do formulário com todos os campos do carro
   const [form, setForm] = useState({
     imagem: '',
     marca: '',
@@ -14,12 +18,17 @@ export default function CarForm() {
     valor: ''
   });
 
+  // Hook de navegação programática (para redirecionar após salvar)
   const navigate = useNavigate();
+
+  // Hook para capturar o parâmetro "id" da URL (para saber se é edição ou cadastro)
   const { id } = useParams();
 
+  // Quando o componente for carregado, se existir um ID, busca os dados para edição
   useEffect(() => {
     if (id) {
       api.get(`/cars/${id}`).then(res => {
+        // Preenche o formulário com os dados do carro, já formatando os campos numéricos
         setForm({
           ...res.data,
           quilometragem: formatNumber(res.data.quilometragem),
@@ -29,13 +38,16 @@ export default function CarForm() {
     }
   }, [id]);
 
+  // Função para formatar números com separador de milhar (ex: 10000 -> 10.000)
   const formatNumber = (value) => {
     if (!value) return '';
     return parseInt(value.toString().replace(/\D/g, ''), 10).toLocaleString('pt-BR');
   };
 
+  // Manipula as alterações nos campos do formulário
   const handleChange = (e) => {
     const { name, value } = e.target;
+    // Formata somente os campos numéricos durante a digitação
     if (['quilometragem', 'valor'].includes(name)) {
       setForm({ ...form, [name]: formatNumber(value) });
     } else {
@@ -43,6 +55,7 @@ export default function CarForm() {
     }
   };
 
+  // Permite colar diretamente um link de imagem copiado (usando API de clipboard)
   const handlePasteImage = async () => {
     try {
       const text = await navigator.clipboard.readText();
@@ -52,7 +65,9 @@ export default function CarForm() {
     }
   };
 
+  // Envia o formulário para a API (cadastrar ou atualizar)
   const handleSubmit = async () => {
+    // Monta o payload removendo os pontos dos números
     const payload = {
       ...form,
       quilometragem: form.quilometragem.replace(/\./g, ''),
@@ -61,22 +76,27 @@ export default function CarForm() {
 
     try {
       if (id) {
+        // Se existe ID, atualiza o carro existente (PUT)
         await api.put(`/cars/${id}`, payload);
       } else {
+        // Se não existe ID, cria um novo carro (POST)
         await api.post('/cars', payload);
       }
+      // Após salvar, redireciona para a listagem de carros
       navigate('/cars');
     } catch (err) {
       alert('Erro ao salvar carro');
     }
   };
 
+  // Renderização do componente
   return (
     <div style={{ padding: '2rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <div style={{ width: '100%', maxWidth: '500px', background: '#f9f9f9', padding: '2rem', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+        {/* Título: define se é cadastro ou edição */}
         <h2 style={{ textAlign: 'center' }}>{id ? 'Editar Carro' : 'Preencha os dados do veículo'}</h2>
 
-        {/* Preview da Imagem */}
+        {/* Área de preview da imagem */}
         <div style={{ 
           width: '100%', 
           height: '200px', 
@@ -113,6 +133,7 @@ export default function CarForm() {
           Envie sua imagem <a href="https://postimages.org/" target="_blank" rel="noopener noreferrer" style={{ color: '#1671ED' }}>aqui.</a>
         </small>
 
+        {/* Campos do formulário gerados dinamicamente */}
         {['marca', 'modelo', 'motorizacao', 'ano', 'quilometragem', 'cidade', 'valor'].map(field => (
           <input
             key={field}
@@ -124,6 +145,7 @@ export default function CarForm() {
           />
         ))}
 
+        {/* Botão de salvar */}
         <button 
           onClick={handleSubmit} 
           style={{ padding: '0.5rem 1rem', background: '#1671ED', color: '#fff', border: 'none', borderRadius: '4px', width: '100%', marginTop: '1rem' }}
